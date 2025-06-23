@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: CodeReveal API
-  description: API for CodeReveal with token security data and rug analysis
+  title: TraceonAI API
+  description: API for TraceonAI with token security data and rug analysis
   version: 1.0.0
 servers:
   - url: https://api.example.com
@@ -266,7 +266,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Welcome to CodeReveal API"
+                    example: "Welcome to TraceonAI API"
   
   /codereveal:
     post:
