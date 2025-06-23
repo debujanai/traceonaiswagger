@@ -4,7 +4,7 @@ info:
   description: API for TraceonAI with token security data and rug analysis
   version: 1.0.0
 servers:
-  - url: https://api.example.com
+  - url: https://api.traceonai.io
     description: Production server (uses live data)
   
 components:
