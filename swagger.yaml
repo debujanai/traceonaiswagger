@@ -1,0 +1,617 @@
+openapi: 3.0.0
+info:
+  title: CodeReveal API
+  description: API for CodeReveal with token security data and rug analysis
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+    description: Production server (uses live data)
+  
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key for authentication
+  
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error message"
+    
+    TokenSecurityRequest:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          type: string
+          description: Contract address
+          example: "0x1234567890abcdef1234567890abcdef12345678"
+        chainId:
+          type: string
+          description: Chain ID (optional, defaults to "1" - Ethereum)
+          example: "1"
+    
+    ContractAuditRequest:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          type: string
+          description: Contract address
+          example: "0x1234567890abcdef1234567890abcdef12345678"
+    
+    TokenSecurityResponse:
+      type: object
+      properties:
+        result:
+          type: object
+          properties:
+            overview:
+              type: object
+              properties:
+                token_name:
+                  type: string
+                  example: "Example Token"
+                token_symbol:
+                  type: string
+                  example: "EXT"
+                total_supply:
+                  type: string
+                  example: "10000000000"
+                holder_count:
+                  type: string
+                  example: "3699"
+                buy_tax:
+                  type: string
+                  example: "0"
+                sell_tax:
+                  type: string
+                  example: "0"
+                security_risk:
+                  type: object
+                  properties:
+                    level:
+                      type: string
+                      example: "Low Risk"
+                    color:
+                      type: string
+                      example: "bg-emerald-500"
+                creator_info:
+                  type: object
+                  properties:
+                    creator_address:
+                      type: string
+                      example: "0xb7c08b8a3b9d607422c4319e8f5eaa2fb38a3a70"
+                    creator_balance:
+                      type: string
+                      example: "4243000"
+                is_in_cex:
+                  type: object
+                  properties:
+                    listed:
+                      type: string
+                      example: "1"
+                    cex_list:
+                      type: array
+                      items:
+                        type: string
+                      example: ["Binance", "Coinbase"]
+            security:
+              type: object
+              properties:
+                is_honeypot:
+                  type: string
+                  example: "0"
+                hidden_owner:
+                  type: string
+                  example: "0"
+                can_take_back_ownership:
+                  type: string
+                  example: "0"
+                selfdestruct:
+                  type: string
+                  example: "0"
+                is_blacklisted:
+                  type: string
+                  example: "0"
+                cannot_sell_all:
+                  type: string
+                  example: "0"
+                is_open_source:
+                  type: string
+                  example: "1"
+                is_mintable:
+                  type: string
+                  example: "0"
+                is_anti_whale:
+                  type: string
+                  example: "0"
+                is_proxy:
+                  type: string
+                  example: "0"
+                transfer_pausable:
+                  type: string
+                  example: "0"
+            holders:
+              type: object
+              properties:
+                token_holders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                        example: "0x..."
+                      tag:
+                        type: string
+                        example: "Exchange"
+                      is_contract:
+                        type: integer
+                        example: 1
+                      is_locked:
+                        type: integer
+                        example: 0
+                      balance:
+                        type: string
+                        example: "1000000"
+                      percent:
+                        type: string
+                        example: "10.5"
+                lp_holders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                        example: "0x..."
+                      tag:
+                        type: string
+                        example: "LP Lock"
+                      is_contract:
+                        type: integer
+                        example: 1
+                      is_locked:
+                        type: integer
+                        example: 1
+                      balance:
+                        type: string
+                        example: "500000"
+                      percent:
+                        type: string
+                        example: "75.5"
+                lp_holder_count:
+                  type: string
+                  example: "10"
+                lp_total_supply:
+                  type: string
+                  example: "1000000"
+            trading:
+              type: object
+              properties:
+                dex:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Uniswap V2"
+                      liquidity:
+                        type: string
+                        example: "500000"
+                      pair:
+                        type: string
+                        example: "TOKEN/ETH"
+                      liquidity_type:
+                        type: string
+                        example: "Normal"
+    
+    ContractAuditResponse:
+      type: object
+      properties:
+        contractAddress:
+          type: string
+          example: "0x1234567890abcdef1234567890abcdef12345678"
+        contractName:
+          type: string
+          example: "TokenContract"
+        compiler:
+          type: string
+          example: "v0.8.4+commit.c7e474f2"
+        securityAnalysis:
+          type: object
+          properties:
+            issues:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    example: "Reentrancy Risk: Missing Reentrancy Guard"
+                  description:
+                    type: string
+                    example: "The contract makes external calls without using a reentrancy guard.\n\nImpact: May be vulnerable to reentrancy attacks if proper precautions are not taken elsewhere.\n\nRecommendation: Implement a reentrancy guard using the nonReentrant modifier from OpenZeppelin or similar."
+                  impact:
+                    type: string
+                    example: "High"
+                  confidence:
+                    type: string
+                    example: "High"
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /:
+    get:
+      summary: Welcome message
+      description: Returns a welcome message to confirm the API is running
+      responses:
+        '200':
+          description: Welcome message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Welcome to CodeReveal API"
+  
+  /codereveal:
+    post:
+      summary: Get token security data
+      description: Fetches token security data and formats it to match the frontend UI tabs structure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenSecurityRequest'
+      responses:
+        '200':
+          description: Token security data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenSecurityResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /codereveal/audit:
+    post:
+      summary: Get contract audit
+      description: Performs an in-depth security audit of a smart contract by analyzing its source code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractAuditRequest'
+      responses:
+        '200':
+          description: Contract audit data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractAuditResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /rugtrace:
+    post:
+      summary: Get all rug analyses
+      description: Get all rug analyses in one request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractAuditRequest'
+      responses:
+        '200':
+          description: All rug analyses
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /rugtrace/overview:
+    post:
+      summary: Get rug analysis overview
+      description: Get overview information for rug analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractAuditRequest'
+      responses:
+        '200':
+          description: Rug analysis overview
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /rugtrace/risk-analysis:
+    post:
+      summary: Get risk analysis
+      description: Get risk analysis information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractAuditRequest'
+      responses:
+        '200':
+          description: Risk analysis
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /rugtrace/wallets-involved:
+    post:
+      summary: Get wallets involved
+      description: Get information about wallets involved
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractAuditRequest'
+      responses:
+        '200':
+          description: Wallets involved
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /rugtrace/liquidity-info:
+    post:
+      summary: Get liquidity information
+      description: Get liquidity information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractAuditRequest'
+      responses:
+        '200':
+          description: Liquidity information
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /rugtrace/past-rugs:
+    post:
+      summary: Get past rugs
+      description: Get information about past rugs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractAuditRequest'
+      responses:
+        '200':
+          description: Past rugs information
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
