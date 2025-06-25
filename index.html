@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <title>TraceonAI API Documentation</title>
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css">
-  <!-- Favicon for browser tab -->
-  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32" />
-  <link rel="icon" type="image/png" href="favicon.png" sizes="16x16" />
+  <!-- Favicon - replace this URL with your own favicon URL -->
+  <link rel="icon" type="image/png" href="favicon.ico" sizes="32x32" />
   <style>
     body {
       margin: 0;
@@ -18,8 +17,28 @@
     .swagger-ui .info .title {
       font-size: 36px;
     }
-    /* Hide the search bar and swagger.yaml display */
+    /* Show the server selection but hide the search bar */
     .swagger-ui .scheme-container {
+      display: block;
+      background: #1b1b1b;
+      box-shadow: none;
+      padding: 10px 0;
+    }
+    .swagger-ui .scheme-container .schemes-wrapper {
+      display: block;
+      margin: 0 20px;
+    }
+    .swagger-ui .servers-title {
+      display: none;
+    }
+    .swagger-ui .servers > label {
+      color: white;
+      margin-right: 10px;
+    }
+    .swagger-ui .servers select {
+      min-width: 200px;
+    }
+    .swagger-ui .auth-wrapper {
       display: none;
     }
     /* Custom header styling */
@@ -49,6 +68,7 @@
 </head>
 <body>
   <div id="custom-header">
+    <!-- Replace the src attribute with the path to your logo image -->
     <img src="logo.png" alt="TraceonAI Logo" id="logo">
     <h1>TraceonAI API Documentation</h1>
   </div>
