@@ -32,13 +32,6 @@ servers:
     description: Production server (uses live data)
   
 components:
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: x-api-key
-      description: API key for authentication
-  
   schemas:
     Error:
       type: object
@@ -70,35 +63,6 @@ components:
           type: string
           description: Contract address
           example: "0x1234567890abcdef1234567890abcdef12345678"
-    
-    ApiKeyRequest:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          description: Name associated with the API key
-          example: "User Name"
-        tier:
-          type: string
-          description: Tier level for the API key (basic, pro, or expert)
-          enum: [basic, pro, expert]
-          default: basic
-          example: "pro"
-    
-    ApiKeyResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        apiKey:
-          type: string
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        message:
-          type: string
-          example: "API key generated successfully."
     
     TokenSecurityResponse:
       type: object
@@ -301,9 +265,6 @@ components:
                     type: string
                     example: "High"
 
-security:
-  - ApiKeyAuth: []
-
 paths:
   /:
     get:
@@ -320,140 +281,6 @@ paths:
                   message:
                     type: string
                     example: "Welcome to TraceonAI API"
-  
-  /api-keys:
-    post:
-      summary: Generate a new API key
-      description: |
-        Generates a new API key with the specified tier level.
-        This endpoint requires admin authentication.
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ApiKeyRequest'
-      responses:
-        '201':
-          description: API key generated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiKeyResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    
-    get:
-      summary: List all API keys
-      description: |
-        Lists all API keys in the system.
-        This endpoint requires admin authentication.
-      security: []
-      responses:
-        '200':
-          description: List of API keys
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  apiKeys:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          example: "550e8400-e29b-41d4-a716-446655440000"
-                        name:
-                          type: string
-                          example: "User Name"
-                        tier:
-                          type: string
-                          example: "pro"
-                        createdAt:
-                          type: string
-                          format: date-time
-                          example: "2023-01-01T00:00:00Z"
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  
-  /api-keys/{key}:
-    delete:
-      summary: Revoke an API key
-      description: |
-        Revokes an existing API key.
-        This endpoint requires admin authentication.
-      security: []
-      parameters:
-        - name: key
-          in: path
-          required: true
-          schema:
-            type: string
-          description: API key to revoke
-      responses:
-        '200':
-          description: API key revoked
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "API key revoked successfully"
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   
   /codereveal:
     post:
