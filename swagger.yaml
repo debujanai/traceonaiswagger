@@ -12,14 +12,13 @@ info:
     - Access to:
       - `/codereveal/security-analysis` (basic token security analysis)
       - `/rugtrace/overview`
-      - `/rugtrace/risk-analysis`
     
     ### Pro Tier
     - Rate limits: 2 requests per 10 seconds, 10 requests per minute
     - Access to all Basic tier endpoints plus:
       - `/codereveal` (complete token security data)
       - `/codereveal/audit` (advanced contract audit)
-      - `/rugtrace/wallets-involved`
+      - `/rugtrace/risk-analysis`
       - `/rugtrace/liquidity-info`
     
     ### Expert Tier
@@ -27,6 +26,7 @@ info:
     - Access to all Pro tier endpoints plus:
       - `/rugtrace/past-rugs`
       - `/rugtrace` (combined analysis)
+      - `/rugtrace/wallets-involved`
   version: 1.0.0
 servers:
   - url: https://api.traceonai.io
@@ -551,7 +551,7 @@ paths:
       summary: Get risk analysis
       description: |
         Get risk analysis information.
-        Available to all tier levels (Basic, Pro, Expert).
+        Requires Pro or Expert tier.
       requestBody:
         required: true
         content:
@@ -577,6 +577,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient tier level
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '429':
           description: Rate limit exceeded
           content:
@@ -595,7 +601,7 @@ paths:
       summary: Get wallets involved
       description: |
         Get information about wallets involved.
-        Requires Pro or Expert tier.
+        Requires Expert tier.
       requestBody:
         required: true
         content:
