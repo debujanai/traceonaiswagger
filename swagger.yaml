@@ -32,6 +32,13 @@ servers:
     description: Production server (uses live data)
   
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key for authentication
+  
   schemas:
     Error:
       type: object
