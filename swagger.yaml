@@ -10,13 +10,14 @@ info:
     ### Basic Tier
     - Rate limits: 1 request per 10 seconds, 5 requests per minute
     - Access to:
-      - `/codereveal` (token security data)
+      - `/codereveal/security-analysis` (basic token security analysis)
       - `/rugtrace/overview`
       - `/rugtrace/risk-analysis`
     
     ### Pro Tier
     - Rate limits: 2 requests per 10 seconds, 10 requests per minute
     - Access to all Basic tier endpoints plus:
+      - `/codereveal` (complete token security data)
       - `/codereveal/audit` (advanced contract audit)
       - `/rugtrace/wallets-involved`
       - `/rugtrace/liquidity-info`
@@ -289,12 +290,62 @@ paths:
                     type: string
                     example: "Welcome to TraceonAI API"
   
+  /codereveal/security-analysis:
+    post:
+      summary: Get basic token security analysis
+      description: |
+        Fetches basic token security data for tokens.
+        Available to all tier levels (Basic, Pro, Expert).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenSecurityRequest'
+      responses:
+        '200':
+          description: Basic token security data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenSecurityResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
   /codereveal:
     post:
-      summary: Get token security data
+      summary: Get full token security data
       description: |
-        Fetches token security data and formats it to match the frontend UI tabs structure.
-        Available to all tier levels (Basic, Pro, Expert).
+        Fetches comprehensive token security data and formats it to match the frontend UI tabs structure.
+        Requires Pro or Expert tier.
       requestBody:
         required: true
         content:
@@ -316,6 +367,12 @@ paths:
                 $ref: '#/components/schemas/Error'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Insufficient tier level
           content:
             application/json:
               schema:
