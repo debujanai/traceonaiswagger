@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TraceonAI API Documentation</title>
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui.css">
-  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.0.0/favicon-32x32.png" sizes="32x32" />
-  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.0.0/favicon-16x16.png" sizes="16x16" />
+  <link rel="icon" type="image/png" href="logo3.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="logo3.png" sizes="16x16" />
   <style>
     html {
       box-sizing: border-box;
@@ -24,9 +24,51 @@
       margin: 0;
       background: #fafafa;
     }
+
+    /* Hide the default topbar and branding */
+    .swagger-ui .topbar {
+      display: none !important;
+    }
+    
+    /* Custom topbar styling */
+    .custom-topbar {
+      background: #000;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-topbar img {
+      height: 50px;
+      width: auto;
+      margin-left: 10%;
+    }
+
+    /* Additional styling to clean up the UI */
+    .swagger-ui {
+      margin-top: 0;
+    }
+
+    /* Hide the swagger.yaml link text */
+    .swagger-ui .info .title small {
+      display: none;
+    }
+    
+    .swagger-ui .info a {
+      display: none;
+    }
+
+    #swagger-ui {
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
+  <!-- Custom Topbar -->
+  <div class="custom-topbar">
+    <img src="logo.png" alt="TraceonAI Logo">
+  </div>
   <div id="swagger-ui"></div>
 
   <script src="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui-bundle.js"></script>
