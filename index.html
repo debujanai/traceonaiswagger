@@ -2,80 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TraceonAI API Documentation</title>
-  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css">
-  <!-- Favicon - replace this URL with your own favicon URL -->
-  <link rel="icon" type="image/png" href="favicon.ico" sizes="32x32" />
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui.css">
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.0.0/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.0.0/favicon-16x16.png" sizes="16x16" />
   <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+    
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+    
     body {
       margin: 0;
-      padding: 0;
-    }
-    .topbar {
-      display: none !important;
-    }
-    .swagger-ui .info .title {
-      font-size: 36px;
-    }
-    /* Show the server selection but hide the search bar */
-    .swagger-ui .scheme-container {
-      display: block;
-      background: #1b1b1b;
-      box-shadow: none;
-      padding: 10px 0;
-    }
-    .swagger-ui .scheme-container .schemes-wrapper {
-      display: block;
-      margin: 0 20px;
-    }
-    .swagger-ui .servers-title {
-      display: none;
-    }
-    .swagger-ui .servers > label {
-      color: white;
-      margin-right: 10px;
-    }
-    .swagger-ui .servers select {
-      min-width: 200px;
-    }
-    .swagger-ui .auth-wrapper {
-      display: none;
-    }
-    /* Custom header styling */
-    #custom-header {
-      background-color: #1b1b1b;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-    }
-    #custom-header img {
-      height: 40px;
-      margin-right: 15px;
-    }
-    #custom-header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-    /* Hide swagger supported by text */
-    .swagger-ui .information-container .info hgroup.main a {
-      display: none;
-    }
-    .swagger-ui .information-container .info hgroup.main span {
-      display: none;
+      background: #fafafa;
     }
   </style>
 </head>
 <body>
-  <div id="custom-header">
-    <!-- Replace the src attribute with the path to your logo image -->
-    <img src="logo.png" alt="TraceonAI Logo" id="logo">
-    <h1>TraceonAI API Documentation</h1>
-  </div>
-
   <div id="swagger-ui"></div>
 
-  <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.0.0/swagger-ui-standalone-preset.js"></script>
   <script>
     window.onload = function() {
       const ui = SwaggerUIBundle({
@@ -83,14 +38,16 @@
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
-          SwaggerUIBundle.presets.apis
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
         ],
-        layout: "BaseLayout",
-        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
-        validatorUrl: null
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
       });
       window.ui = ui;
-    }
+    };
   </script>
 </body>
 </html> 
