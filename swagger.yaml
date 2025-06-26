@@ -31,6 +31,10 @@ info:
 servers:
   - url: https://api.traceonai.io
     description: Production server (uses live data)
+
+# Add global security requirement
+security:
+  - ApiKeyAuth: []
   
 components:
   securitySchemes:
