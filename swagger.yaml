@@ -22,7 +22,7 @@ info:
       - `/rugtrace/liquidity-info`
     
     ### Expert Tier
-    - Rate limits: 5 requests per 10 seconds, 20 requests per minute
+    - Rate limits: 3 requests per 10 seconds, 15 requests per minute
     - Access to all Pro tier endpoints plus:
       - `/rugtrace/past-rugs`
       - `/rugtrace` (combined analysis)
