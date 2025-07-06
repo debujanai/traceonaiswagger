@@ -54,7 +54,6 @@ components:
       properties:
         error:
           type: string
-          example: "Error message"
     
     TokenSecurityRequest:
       type: object
