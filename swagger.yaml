@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: TraceonAI API
   description: |
-    API for TraceonAI with token security data and rug analysis.
+    API for TraceonAI with token security data, rug analysis, and phishing detection.
     
     ## Tier System
     The API uses a tier-based access system with three levels:
@@ -12,6 +12,7 @@ info:
     - Access to:
       - `/codereveal/security-analysis` (basic token security analysis)
       - `/rugtrace/overview`
+      - `/phishtrace/virus-check` (basic URL security check)
     
     ### Pro Tier
     - Rate limits: 2 requests per 10 seconds, 10 requests per minute
@@ -20,13 +21,16 @@ info:
       - `/codereveal/audit` (advanced contract audit)
       - `/rugtrace/risk-analysis`
       - `/rugtrace/liquidity-info`
+      - `/phishtrace/domain-info` (domain registration and SSL info)
     
     ### Expert Tier
-    - Rate limits: 3 requests per 10 seconds, 15 requests per minute
+    - Rate limits: 5 requests per 10 seconds, 20 requests per minute
     - Access to all Pro tier endpoints plus:
       - `/rugtrace/past-rugs`
       - `/rugtrace` (combined analysis)
       - `/rugtrace/wallets-involved`
+      - `/phishtrace/screenshot` (URL screenshot generation)
+      - `/phishtrace` (combined phishing analysis)
   version: 1.0.0
 servers:
   - url: https://api.traceonai.io
@@ -276,6 +280,215 @@ components:
                   confidence:
                     type: string
                     example: "High"
+
+    PhishTraceRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          description: URL to analyze
+          example: "https://example.com"
+
+    PhishTraceOverviewResponse:
+      type: object
+      properties:
+        urlAnalysis:
+          type: object
+          properties:
+            riskLevel:
+              type: string
+              example: "High Risk"
+            url:
+              type: string
+              example: "https://example.com"
+        securityScore:
+          type: object
+          properties:
+            score:
+              type: string
+              example: "85.50"
+            color:
+              type: string
+              example: "bg-red-500"
+        detectionSummary:
+          type: object
+          properties:
+            malicious:
+              type: integer
+              example: 5
+            suspicious:
+              type: integer
+              example: 2
+            harmless:
+              type: integer
+              example: 45
+            undetected:
+              type: integer
+              example: 10
+
+    PhishTraceDetailsResponse:
+      type: object
+      properties:
+        originalUrl:
+          type: string
+          example: "https://example.com"
+        finalUrl:
+          type: string
+          example: "https://example.com/login"
+        pageTitle:
+          type: string
+          example: "Login Page"
+        analysisDate:
+          type: string
+          example: "2024-03-20 15:30:45"
+
+    PhishTraceSecurityResponse:
+      type: object
+      properties:
+        engineCount:
+          type: integer
+          example: 62
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              vendor:
+                type: string
+                example: "Google Safe Browsing"
+              method:
+                type: string
+                example: "blacklist"
+              category:
+                type: string
+                example: "malicious"
+              result:
+                type: string
+                example: "phishing"
+
+    PhishTraceDomainResponse:
+      type: object
+      properties:
+        domainRegistration:
+          type: object
+          properties:
+            domain:
+              type: string
+              example: "example.com"
+            domainAge:
+              type: string
+              example: "365 days (1 years, 0 months)"
+            registrationDate:
+              type: string
+              example: "2023-03-20"
+            expirationDate:
+              type: string
+              example: "2025-03-20"
+            lastUpdated:
+              type: string
+              example: "2024-01-15"
+            registrar:
+              type: string
+              example: "GoDaddy.com, LLC"
+        sslCertificate:
+          type: object
+          properties:
+            status:
+              type: string
+              example: "Valid"
+            issuedTo:
+              type: string
+              example: "example.com"
+            issuedBy:
+              type: string
+              example: "Let's Encrypt Authority X3"
+            validFrom:
+              type: string
+              example: "2024-03-01 00:00:00"
+            validUntil:
+              type: string
+              example: "2024-05-30 23:59:59"
+            certAge:
+              type: string
+              example: "20 days"
+            daysUntilExpiration:
+              type: string
+              example: "70 days"
+            riskLevel:
+              type: string
+              example: "Low Risk"
+            riskDescription:
+              type: string
+              example: "The SSL certificate appears valid and has been in use for some time."
+
+    PhishTraceScreenshotResponse:
+      type: object
+      properties:
+        screenshot:
+          type: object
+          properties:
+            url:
+              type: string
+              example: "https://api.traceonai.com/screenshots/aHR0cHM6Ly9leGFtcGxlLmNvbQ"
+            dimensions:
+              type: string
+              example: "1920 × 1080"
+            format:
+              type: string
+              example: "PNG"
+            size:
+              type: string
+              example: "245.3 kB"
+            width:
+              type: integer
+              example: 1920
+            height:
+              type: integer
+              example: 1080
+
+    PhishTraceCombinedResponse:
+      type: object
+      properties:
+        overview:
+          $ref: '#/components/schemas/PhishTraceOverviewResponse'
+        details:
+          $ref: '#/components/schemas/PhishTraceDetailsResponse'
+        security:
+          $ref: '#/components/schemas/PhishTraceSecurityResponse'
+        domainRegistration:
+          $ref: '#/components/schemas/PhishTraceDomainResponse/properties/domainRegistration'
+        sslCertificate:
+          $ref: '#/components/schemas/PhishTraceDomainResponse/properties/sslCertificate'
+        screenshot:
+          $ref: '#/components/schemas/PhishTraceScreenshotResponse/properties/screenshot'
+        phishingPatterns:
+          type: array
+          items:
+            type: object
+            properties:
+              pattern:
+                type: string
+                example: "secure.*login"
+              risk:
+                type: string
+                example: "high"
+              description:
+                type: string
+                example: "Contains 'secure' and 'login'"
+        securityRisk:
+          type: object
+          properties:
+            level:
+              type: string
+              example: "High Risk"
+            color:
+              type: string
+              example: "bg-red-500"
+            score:
+              type: string
+              example: "85.50"
 
 paths:
   /:
@@ -748,4 +961,167 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error' 
+                $ref: '#/components/schemas/Error'
+
+  /phishtrace:
+    post:
+      summary: Get complete phishing analysis
+      description: |
+        Performs a comprehensive phishing analysis of a URL, including virus checks, domain info, SSL certificate validation, and screenshot generation.
+        Returns data formatted to match the frontend's 5 tabs: Overview, Details, Security, Domain, and Screenshot.
+        Requires Expert tier.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhishTraceRequest'
+      responses:
+        '200':
+          description: Complete phishing analysis data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhishTraceCombinedResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /phishtrace/virus-check:
+    post:
+      summary: Check URL for viruses and malware
+      description: |
+        Analyzes a URL for potential security threats using VirusTotal API.
+        Returns data formatted for the Overview, Details, and Security tabs.
+        Available to all tier levels (Basic, Pro, Expert).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhishTraceRequest'
+      responses:
+        '200':
+          description: Virus check results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  overview:
+                    $ref: '#/components/schemas/PhishTraceOverviewResponse'
+                  details:
+                    $ref: '#/components/schemas/PhishTraceDetailsResponse'
+                  security:
+                    $ref: '#/components/schemas/PhishTraceSecurityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /phishtrace/domain-info:
+    post:
+      summary: Get domain registration and SSL information
+      description: |
+        Fetches domain registration details using WhoisXML API and validates SSL certificate.
+        Returns data formatted for the Domain Info tab.
+        Requires Pro or Expert tier.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhishTraceRequest'
+      responses:
+        '200':
+          description: Domain and SSL certificate information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhishTraceDomainResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /phishtrace/screenshot:
+    post:
+      summary: Generate website screenshot
+      description: |
+        Generates a screenshot of the target URL using Microlink API.
+        Returns data formatted for the Screenshot tab.
+        The screenshot URLs are masked to use api.traceonai.com domain instead of showing the third-party service.
+        Requires Expert tier.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhishTraceRequest'
+      responses:
+        '200':
+          description: Screenshot data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhishTraceScreenshotResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden - Insufficient tier level
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error' 
